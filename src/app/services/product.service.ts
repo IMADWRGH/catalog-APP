@@ -15,17 +15,10 @@ export class ProductService {
     ];
   }
   public getAllProducts(): Observable<Product[]> {
-    let randomNumbre = Math.random();
-    if (randomNumbre < 0.5) {
-      return throwError(() => {
-        new Error("Error");
-      })
-    }
-    else {
-      return of(this.products);
-    }
+    return of(this.products);
   }
-  public deleteProduct(id: number) {
-    this.products.filter(p => p.id != id);
+  public deleteProduct(id: number): Observable<boolean> {
+    this.products = this.products.filter(p => p.id != id);
+    return of(true);
   }
 }

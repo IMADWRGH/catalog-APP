@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ProductService } from '../services/product.service';
 import { Product } from '../model/product.model';
+import { throwError } from 'rxjs';
 
 @Component({
   selector: 'app-products',
@@ -15,6 +16,9 @@ export class ProductsComponent implements OnInit {
 
   }
   ngOnInit(): void {
+    this.handleGetAllProduct();
+  }
+  handleGetAllProduct() {
     this.productService.getAllProducts().subscribe({
       next: (data) => {
         this.products = data;
@@ -26,8 +30,22 @@ export class ProductsComponent implements OnInit {
       }
     });
   }
-  handleDeleteProducts(product: Product) {
 
+
+
+  handleDeleteProducts(product: Product) {
+    let conf = confirm("Are you sure");
+    if (conf == false) return;
+    this.productService.deleteProduct(product.id).subscribe({
+      next: (data) => {
+        let index = this.products.indexOf(product);
+        this.products.splice(index, 1);
+      },
+      error: (err) => {
+        throwError
+      }
+
+    })
   }
 
 }
