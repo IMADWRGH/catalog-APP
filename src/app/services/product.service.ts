@@ -9,9 +9,9 @@ export class ProductService {
   private products !: Array<Product>;
   constructor() {
     this.products = [
-      { id: 1, name: "Computer", price: 6500 },
-      { id: 2, name: "Printer", price: 1200 },
-      { id: 3, name: "Smart phone", price: 1400 },
+      { id: 1, name: "Computer", price: 6500, promotion: true },
+      { id: 2, name: "Printer", price: 1200, promotion: true },
+      { id: 3, name: "Smart phone", price: 1400, promotion: false },
     ];
   }
   public getAllProducts(): Observable<Product[]> {
@@ -21,4 +21,18 @@ export class ProductService {
     this.products = this.products.filter(p => p.id != id);
     return of(true);
   }
+  public setPromo(id: number): Observable<boolean> {
+    let product = this.products.find(p => p.id == id)
+    if (product != undefined) {
+      product.promotion = !product.promotion;
+      return of(true);
+    } else {
+      return throwError(() => new Error("Product not found"));
+    }
+  }
+
+  //   public searchProduct(keyword: string): Observablr<Product[]> {
+  // this.products.filter(p)
+  //   }
 }
+

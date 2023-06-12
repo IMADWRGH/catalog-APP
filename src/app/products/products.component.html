@@ -4,15 +4,35 @@
       {{ errorMsg }}
     </div>
   </ng-template>
+  <!-- {{ searchFormGroup.value | json }} -->
   <div class="card" *ngIf="products; else errors">
     <div class="card-header">Products List</div>
     <div class="card-body">
+      <form
+        [formGroup]="searchFormGroup"
+        (ngSubmit)="handleSearchProduct()"
+        class="m-2"
+      >
+        <div class="input-group">
+          <label for="search" class="input-group-text">Search :</label>
+          <input
+            formControlName="keyword"
+            type="text"
+            name="search"
+            class="form-control"
+          />
+          <button type="button" class="btn btn-info">
+            <i class="bi bi-search"></i>
+          </button>
+        </div>
+      </form>
       <table class="table">
         <thead>
           <tr>
             <th>Id</th>
             <th>Name</th>
             <th>Price</th>
+            <th colspan="2">Promotion</th>
             <th>Option</th>
           </tr>
         </thead>
@@ -22,9 +42,27 @@
             <td>{{ product.name }}</td>
             <td>{{ product.price }}</td>
             <td>
+              <i
+                *ngIf="product.promotion == true"
+                class="bi bi-heart-fill text-danger"
+              ></i>
+            </td>
+            <td>
+              <button
+                (click)="handleSetPromo(product)"
+                [ngClass]="
+                  product.promotion == true ? 'btn-dark' : 'btn-success'
+                "
+                class="btn"
+              >
+                <span *ngIf="product.promotion == true">Promo Off</span>
+                <span *ngIf="product.promotion == false">Promo On</span>
+              </button>
+            </td>
+            <td>
               <button
                 (click)="handleDeleteProducts(product)"
-                class="btn btn-danger"
+                class="btn btn-dark"
               >
                 <i class="bi bi-trash"></i>
               </button>

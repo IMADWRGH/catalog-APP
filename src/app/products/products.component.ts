@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ProductService } from '../services/product.service';
 import { Product } from '../model/product.model';
 import { throwError } from 'rxjs';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-products',
@@ -11,12 +12,16 @@ import { throwError } from 'rxjs';
 export class ProductsComponent implements OnInit {
   products !: Array<Product>;
   errorMsg !: string;
-
-  constructor(private productService: ProductService) {
+  searchFormGroup !: FormGroup;
+  constructor(private productService: ProductService, private formbuild: FormBuilder) {
 
   }
   ngOnInit(): void {
     this.handleGetAllProduct();
+    this.searchFormGroup = this.formbuild.group({
+      keyword: this.formbuild.control(null)
+    });
+
   }
   handleGetAllProduct() {
     this.productService.getAllProducts().subscribe({
@@ -48,4 +53,19 @@ export class ProductsComponent implements OnInit {
     })
   }
 
+  handleSetPromo(product: Product) {
+    let promo = product.promotion;
+    this.productService.setPromo(product.id).subscribe({
+      next: (data) => {
+        product.promotion = !promo;
+      },
+      error: (err) => {
+        this.errorMsg = err;
+      }
+    })
+  }
+
+  handleSearchProduct() {
+    let keyword = this.searchFormGroup.value.keyword;
+  }
 }
