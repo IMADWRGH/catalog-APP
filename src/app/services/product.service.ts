@@ -31,8 +31,9 @@ export class ProductService {
     }
   }
 
-  //   public searchProduct(keyword: string): Observablr<Product[]> {
-  // this.products.filter(p)
-  //   }
+  public searchProduct(keyword: string): Observable<Product[]> {
+    let product = this.products.filter(p => p.name.includes(keyword));
+    return of(product);
+  }
 }
 

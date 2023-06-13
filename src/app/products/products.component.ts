@@ -67,5 +67,10 @@ export class ProductsComponent implements OnInit {
 
   handleSearchProduct() {
     let keyword = this.searchFormGroup.value.keyword;
+    this.productService.searchProduct(keyword).subscribe({
+      next: (data) => {
+        this.products = data;
+      }
+    })
   }
 }
