@@ -12,16 +12,37 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 export class ProductsComponent implements OnInit {
   products !: Array<Product>;
   errorMsg !: string;
+  currentPage: number = 0;
+  pageSize: number = 5;
+  totalPages: number = 0;
   searchFormGroup !: FormGroup;
+  currentAction: string = "All";
   constructor(private productService: ProductService, private formbuild: FormBuilder) {
 
   }
   ngOnInit(): void {
-    this.handleGetAllProduct();
+    // this.handleGetAllProduct();
+    this.handleGetPageProduct();
     this.searchFormGroup = this.formbuild.group({
       keyword: this.formbuild.control(null)
     });
 
+  }
+  handleGetPageProduct() {
+    this.productService.getPageProducts(this.currentPage, this.pageSize).subscribe({
+      next: (data) => {
+        this.products = data.products;
+        this.totalPages = data.T_Pages;
+      }
+    });
+  }
+  gotoPage(i: number) {
+    this.currentPage = i;
+    if (this.currentAction === "search") {
+      this.handleSearchProduct();
+    } else {
+      this.handleGetPageProduct();
+    }
   }
   handleGetAllProduct() {
     this.productService.getAllProducts().subscribe({
@@ -66,11 +87,16 @@ export class ProductsComponent implements OnInit {
   }
 
   handleSearchProduct() {
+    this.currentPage = 0;
+    this.currentAction = "search";
     let keyword = this.searchFormGroup.value.keyword;
-    this.productService.searchProduct(keyword).subscribe({
+    this.productService.searchProduct(keyword, this.currentPage, this.pageSize).subscribe({
       next: (data) => {
-        this.products = data;
+        this.products = data.products;
+        this.totalPages = data.T_Pages;
       }
     })
   }
+
+
 }

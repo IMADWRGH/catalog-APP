@@ -1,6 +1,12 @@
 export interface Product {
-    id: number;
+    id: string;
     name: string;
     price: number;
     promotion: boolean;
+}
+export interface PageProducts {
+    products: Product[];
+    page: number;
+    size: number;
+    T_Pages: number;
 }
